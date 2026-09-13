@@ -7,7 +7,15 @@ def generate_tcga_dataset():
     n_samples = 600
     n_features = 40
     
-    feature_names = [f"GENE_{i+1:02d}" for i in range(n_features)]
+    # Map synthetic genes to real oncology biomarkers
+    biomarkers = [
+        "TP53", "BRCA1", "EGFR", "PTEN", "MYC", 
+        "KRAS", "BRAF", "PIK3CA", "AKT1", "CDKN2A",
+        "ERBB2", "MTOR", "ATM", "RB1", "APC",
+        "VHL", "JAK2", "STAT3", "NF1", "MET"
+    ]
+    other_genes = [f"GENE_{i+1:02d}" for i in range(n_features - len(biomarkers))]
+    feature_names = biomarkers + other_genes
     
     # Simulate realistic gene expression with some clustered distributions
     X = np.random.normal(loc=6.0, scale=2.0, size=(n_samples, n_features))
