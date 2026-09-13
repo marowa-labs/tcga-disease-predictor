@@ -4,6 +4,37 @@ A production-grade bioinformatics machine learning platform built to classify pa
 
 ---
 
+## 📸 Platform Demonstration
+
+Here is a visual overview of the TCGA Multi-Omics Disease Predictor dashboard in action:
+
+<p align="center">
+  <img src="public/images/second.png" width="48%" alt="Dashboard Main View" />
+  <img src="public/images/third.png" width="48%" alt="Biomarker Analysis View" />
+</p>
+
+### 🎬 Video Walkthrough
+Watch the full application demonstration and interactive workflow recording below:
+
+[Watch Screen Record.mp4](public/Screen Record.mp4)
+
+---
+
+## 🔄 System Architecture & Data Flow
+
+```mermaid
+graph TD
+    A[TCGA Expression Data / Raw CSV] --> B[Data Loader & Preprocessor]
+    B --> C[Scikit-Learn Random Forest Pipeline]
+    C --> D[PCA Dimensionality Reduction Engine]
+    C --> E[Clinical Risk Classifier & Confidence Scorer]
+    D --> F[Streamlit Multi-Omics Dashboard UI]
+    E --> F
+    G[Quick-Load Baseline Profiles] --> F
+```
+
+---
+
 ## 🌟 Architectural Pillars Met
 
 1. **Technical Depth:** Features a modular `src/` architecture, Scikit-Learn Random Forest pipeline, Principal Component Analysis (PCA) projection, and automated unit testing (`unittest`).

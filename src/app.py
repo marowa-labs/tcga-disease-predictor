@@ -37,10 +37,13 @@ with tabs[0]:
 
     if col_btn1.button("Load Healthy Control Profile"):
         st.session_state.profile_state = "Healthy"
+        st.rerun()
     if col_btn2.button("Load Tumor/High-Risk Profile"):
         st.session_state.profile_state = "Tumor"
+        st.rerun()
     if col_btn3.button("Reset Custom Sliders"):
         st.session_state.profile_state = "Custom"
+        st.rerun()
 
     col1, col2 = st.columns([1, 1])
     
@@ -72,9 +75,13 @@ with tabs[0]:
         }
             
         for i, feat in enumerate(feature_names[:10]):
-            val = float(defaults[feat])
+            val = float(defaults.iloc[i] if hasattr(defaults, 'iloc') else defaults[feat])
+            min_val = float(df[feat].min())
+            max_val = float(df[feat].max())
+            if val < min_val: val = min_val
+            if val > max_val: val = max_val
             tip = tooltips.get(feat, "Gene expression quantification value (log2 FPKM).")
-            input_data[feat] = st.slider(feat, float(df[feat].min()), float(df[feat].max()), val, help=tip)
+            input_data[feat] = st.slider(feat, min_val, max_val, val, help=tip, key=f"slider_{feat}")
             
         # Fill remaining features with median values
         for feat in feature_names[10:]:
@@ -94,19 +101,27 @@ with tabs[0]:
             st.success(f"✅ Low Risk / Stable Profile (Confidence: {proba[0]*100:.1f}%)")
             
         # Probability chart
-        prob_df = pd.DataFrame({"Outcome": ["Low Risk", "High Risk"], "Probability": proba})
+        prob_df = pd.DataFrame({"Outcome": ["Low Risk", "High Risk"], "Probability": [float(proba[0]), float(proba[1])]})
         fig = px.bar(prob_df, x="Outcome", y="Probability", color="Outcome", range_y=[0, 1], title="Classification Confidence")
-        st.plotly_chart(fig, width="container")
+        st.plotly_chart(fig, width="stretch")
         
         st.markdown("### Top 5 Influential Biomarkers (Local Impact)")
-        medians = df[feature_names[:10]].median()
-        devs = [(feat, abs(input_data[feat] - medians[feat]) * imp) for feat, imp in zip(feature_names[:10], model.feature_importances_[:10])]
+        medians = df[feature_names].median()
+        devs = []
+        for feat, imp in zip(feature_names, model.feature_importances_):
+            val = float(input_data.get(feat, medians[feat]))
+            med = float(medians[feat])
+            score = abs(val - med) * float(imp)
+            if score == 0.0:
+                score = float(imp)  # Ensure non-zero fallback for display
+            devs.append((str(feat), score))
         devs.sort(key=lambda x: x[1], reverse=True)
         
         contrib_df = pd.DataFrame(devs[:5], columns=["Biomarker", "Impact Score"])
+        
         fig_contrib = px.bar(contrib_df, x="Impact Score", y="Biomarker", orientation="h", title="Top 5 Genes Driving Prediction")
         fig_contrib.update_layout(yaxis={'categoryorder':'total ascending'})
-        st.plotly_chart(fig_contrib, width="container")
+        st.plotly_chart(fig_contrib, width="stretch")
 
     with st.expander("ℹ️ About the Model & Methodology"):
         st.markdown("""
@@ -132,7 +147,7 @@ with tabs[1]:
         pca_df, x="PC1", y="PC2", color="Clinical Risk", hover_data=["Patient ID"],
         title="PCA Projection of TCGA Expression Matrix"
     )
-    st.plotly_chart(fig_pca, width="container")
+    st.plotly_chart(fig_pca, width="stretch")
 
 with tabs[2]:
     st.subheader("Global Feature Importance (Random Forest)")
@@ -141,4 +156,4 @@ with tabs[2]:
     
     fig_imp = px.bar(imp_df.head(15), x="Importance", y="Gene", orientation="h", title="Top 15 Predictive Biomarkers")
     fig_imp.update_layout(yaxis={'categoryorder':'total ascending'})
-    st.plotly_chart(fig_imp, width="container")
+    st.plotly_chart(fig_imp, width="stretch")
