@@ -18,7 +18,7 @@ Watch the full application demonstration and interactive workflow recording belo
 
 <p align="center">
   <video width="100%" controls>
-    <source src="https://raw.githubusercontent.com/marowa-labs/tcga-disease-predictor/main/public/Screen%20Record.mp4" type="video/mp4">
+    <source src="https://mp3tourl.com/videos/1789327551922-2d8b36d9-7323-4976-bdf7-ac2a36585e18.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 </p>
