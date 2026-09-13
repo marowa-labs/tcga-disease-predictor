@@ -16,10 +16,12 @@ Here is a visual overview of the TCGA Multi-Omics Disease Predictor dashboard in
 ### 🎬 Video Walkthrough
 Watch the full application demonstration and interactive workflow recording below:
 
-<video width="100%" controls>
-  <source src="public/Screen Record.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+<p align="center">
+  <video width="100%" controls>
+    <source src="https://raw.githubusercontent.com/marowa-labs/tcga-disease-predictor/main/public/Screen%20Record.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</p>
 
 ---
 
